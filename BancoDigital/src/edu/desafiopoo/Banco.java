@@ -44,39 +44,37 @@ public class Banco {
 	}
 
 	public boolean sacarDeConta(String numeroConta, double valor) {
-		Optional<Conta> contaOptional = contas.stream().filter(c -> String.valueOf(c.getNumero()).equals(numeroConta))
-				.findFirst();
-
-		return contaOptional.map(conta -> conta.sacar(valor)).orElseGet(() -> {
-			System.out.println("Conta não encontrada!");
-			return false;
-		});
+		return buscarConta(numeroConta)
+			.map(conta -> conta.sacar(valor))
+			.orElseGet(() -> {
+				System.out.println("Conta não encontrada!");
+				return false;
+			});
 	}
 
 	public boolean depositarEmConta(String numeroConta, double valor) {
-		Optional<Conta> contaOptional = contas.stream().filter(c -> String.valueOf(c.getNumero()).equals(numeroConta))
-				.findFirst();
-
-		return contaOptional.map(conta -> conta.depositar(valor)).orElseGet(() -> {
-			System.out.println("Conta não encontrada!");
-			return false;
-		});
-
+		return buscarConta(numeroConta)
+			.map(conta -> conta.depositar(valor))
+			.orElseGet(() -> {
+				System.out.println("Conta não encontrada!");
+				return false;
+			});
 	}
 
 	public boolean transferirEntreContas(String numeroOrigem, String numeroDestino, double valor) {
-		Optional<Conta> contaOrigem = contas.stream().filter(c -> String.valueOf(c.getNumero()).equals(numeroOrigem))
-				.findFirst();
+		return buscarConta(numeroOrigem)
+			.flatMap(origem -> buscarConta(numeroDestino).map(destino -> origem.transferir(destino, valor)))
+			.orElseGet(() -> {
+				System.out.println("Conta de origem ou destino não encontrada!");
+				return false;
+			});
+	}
 
-		Optional<Conta> contaDestino = contas.stream().filter(c -> String.valueOf(c.getNumero()).equals(numeroDestino))
-				.findFirst();
-
-		if (contaOrigem.isPresent() && contaDestino.isPresent()) {
-			return contaOrigem.get().transferir(contaDestino.get(), valor);
-		} else {
-			System.out.println("Conta de origem ou destino não encontrada!");
-			return false;
-		}
+	// Método auxiliar para evitar repetição
+	private Optional<Conta> buscarConta(String numeroConta) {
+		return contas.stream()
+			.filter(c -> String.valueOf(c.getNumero()).equals(numeroConta))
+			.findFirst();
 	}
 
 }
