@@ -1,12 +1,12 @@
 package edu.desafiopoo;
 
 public class Cliente {
-	
+
 	// Somente nome não como final, pois pode haver mudança de sobrenome
 	private String nome;
 	private final String cpf;
 	private final int anoNascimento;
-	
+
 	public Cliente(String nome, String cpf, int anoNascimento) {
 		this.nome = nome;
 		this.cpf = cpf;
