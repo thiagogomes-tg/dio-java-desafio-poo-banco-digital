@@ -46,7 +46,7 @@ public class Banco {
 	
     public boolean sacarDeConta(String numeroConta, double valor) {
         Optional<Conta> contaOptional = contas.stream()
-        									 .filter(c -> String.valueOf(c.getNumero()).equals(numeroConta))
+        				     .filter(c -> String.valueOf(c.getNumero()).equals(numeroConta))
                                              .findFirst();
 
         return contaOptional.map(conta -> conta.sacar(valor))
